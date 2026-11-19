@@ -1,0 +1,45 @@
+{% extends "panel/base.html" %}
+{% block title %}Sargyt #{{ order.pk }}{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>Sargyt #{{ order.pk }} <small>{{ order.created_at|date:"d.m.Y H:i" }}</small></h1>
+  <a class="btn" href="{% url 'panel_orders' %}">← Sargytlar</a>
+</div>
+
+<div class="order-grid">
+  <section class="box">
+    <div class="tablewrap">
+    <table class="table">
+      <thead><tr><th>Haryt</th><th class="num">Bahasy</th><th class="num">Sany</th><th class="num">Jemi</th></tr></thead>
+      <tbody>
+      {% for it in order.items.all %}
+        <tr>
+          <td>{% if it.part %}<a class="name" href="/haryt/{{ it.part_id }}/" target="_blank" rel="noopener">{{ it.name }}</a>{% else %}{{ it.name }} <span class="sub">(pozulan haryt)</span>{% endif %}</td>
+          <td class="num">{{ it.price|floatformat:"-2" }}</td>
+          <td class="num">{{ it.qty }}</td>
+          <td class="num">{{ it.line_total|floatformat:"-2" }}</td>
+        </tr>
+      {% endfor %}
+        <tr class="total-row"><td colspan="3">Jemi</td><td class="num">{{ order.total|floatformat:"-2" }} manat</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </section>
+
+  <aside class="box">
+    <dl class="kv">
+      <dt>Ady</dt><dd>{{ order.name }}</dd>
+      <dt>Telefon</dt><dd><a href="tel:{{ order.phone }}">{{ order.phone }}</a></dd>
+      <dt>Görnüşi</dt><dd>{{ order.get_delivery_display }}</dd>
+      {% if order.address %}<dt>Salgy</dt><dd>{{ order.address }}</dd>{% endif %}
+      {% if order.note %}<dt>Bellik</dt><dd>{{ order.note|linebreaksbr }}</dd>{% endif %}
+    </dl>
+    <form method="post" class="form" style="margin-top:1.25rem">
+      {% csrf_token %}
+      <label for="{{ form.status.id_for_label }}">Ýagdaýy</label>
+      {{ form.status }}
+      <div class="form__actions"><button class="btn btn--primary" type="submit">Sakla</button></div>
+    </form>
+  </aside>
+</div>
+{% endblock %}

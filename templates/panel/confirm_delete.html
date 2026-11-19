@@ -1,0 +1,14 @@
+{% extends "panel/base.html" %}
+{% block title %}Poz{% endblock %}
+{% block content %}
+<section class="box box--narrow">
+  <h1>Zapçasty pozmaly?</h1>
+  <p><strong>{{ object.name }}</strong> hemişelik pozular.</p>
+  <img class="preview" src="{{ object.image.url }}" alt="">
+  <form method="post" class="form__actions">
+    {% csrf_token %}
+    <button type="submit" class="btn btn--danger">Hawa, poz</button>
+    <a class="btn" href="{% url 'panel_list' %}">Ýok, yzyna</a>
+  </form>
+</section>
+{% endblock %}

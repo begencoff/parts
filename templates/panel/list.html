@@ -1,0 +1,41 @@
+{% extends "panel/base.html" %}
+{% block title %}Zapçastlar{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>Zapçastlar <small>{{ paginator.count }}</small></h1>
+  <a class="btn btn--primary" href="{% url 'panel_create' %}">Täze zapçast goş</a>
+</div>
+
+<form class="filter" method="get">
+  <input type="search" name="q" value="{{ q }}" placeholder="Ady boýunça gözle" aria-label="Gözleg">
+  <button type="submit" class="btn">Gözle</button>
+  {% if q %}<a href="{% url 'panel_list' %}">Arassala</a>{% endif %}
+</form>
+
+{% if parts %}
+<div class="tablewrap">
+<table class="table">
+  <thead>
+    <tr><th>Surat</th><th>Ady</th><th class="num">Bahasy</th><th>Ýagdaýy</th><th></th></tr>
+  </thead>
+  <tbody>
+  {% for part in parts %}
+    <tr>
+      <td class="thumb"><img src="{{ part.image.url }}" alt=""></td>
+      <td><a class="name" href="{% url 'part_detail' part.pk %}" target="_blank" rel="noopener">{{ part.name }}</a>{% if part.category or part.car %}<span class="sub">{% if part.category %}{{ part.category.name }}{% endif %}{% if part.category and part.car %} · {% endif %}{{ part.car }}</span>{% endif %}</td>
+      <td class="num">{{ part.price|floatformat:"-2" }} manat{% if part.discount_percent %}<span class="sub"><s>{{ part.old_price|floatformat:"-2" }}</s> −{{ part.discount_percent }}%</span>{% endif %}</td>
+      <td>{% if part.in_stock %}<span class="pill pill--ok">Bar</span>{% else %}<span class="pill">Gutardy</span>{% endif %}</td>
+      <td class="actions">
+        <a class="btn btn--small" href="{% url 'panel_update' part.pk %}">Üýtget</a>
+        <a class="btn btn--small btn--danger" href="{% url 'panel_delete' part.pk %}">Poz</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% include "partials/pagination.html" %}
+{% else %}
+  <p class="empty">{% if q %}Hiç zat tapylmady.{% else %}Entek zapçast ýok. “Täze zapçast goş” düwmesine basyň.{% endif %}</p>
+{% endif %}
+{% endblock %}

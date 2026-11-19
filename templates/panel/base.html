@@ -1,0 +1,38 @@
+{% load static %}<!doctype html>
+<html lang="tk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>{% block title %}Admin panel{% endblock %} · {{ SITE_NAME }}</title>
+  <link rel="stylesheet" href="{% static 'css/panel.css' %}">
+</head>
+<body>
+  <header class="bar">
+    <div class="wrap bar__row">
+      <a class="bar__brand" href="{% url 'panel_list' %}">{{ SITE_NAME }} <span>admin</span></a>
+      <nav class="bar__nav">
+        <a href="{% url 'panel_orders' %}">Sargytlar{% if NEW_ORDERS %} <b class="dot">{{ NEW_ORDERS }}</b>{% endif %}</a>
+        <a href="{% url 'panel_list' %}">Zapçastlar</a>
+        <a href="{% url 'panel_categories' %}">Kategoriýalar</a>
+        <a href="{% url 'panel_settings' %}">Sazlamalar</a>
+        <a href="{% url 'home' %}" target="_blank" rel="noopener">Sahypany aç</a>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'panel_logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="linklike">Çykyş</button>
+        </form>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    {% if messages %}
+      <ul class="msgs">
+        {% for m in messages %}<li class="msg msg--{{ m.tags }}">{{ m }}</li>{% endfor %}
+      </ul>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

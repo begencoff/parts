@@ -1,0 +1,38 @@
+{% extends "panel/base.html" %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<section class="box">
+  <h1>{{ title }}</h1>
+  <form method="post" enctype="multipart/form-data" class="form">
+    {% csrf_token %}
+    {% for field in form %}
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {% if field.name == "image" and object.image %}
+        <img class="preview" src="{{ object.image.url }}" alt="Häzirki surat">
+        <p class="hint">Täze surat saýlasaňyz, köne surat çalşyrylar.</p>
+        <input type="file" name="image" id="{{ field.id_for_label }}" accept="image/*">
+      {% elif field.name == "in_stock" %}
+        <span class="check">{{ field }} <span>Ammarda bar (aýyrsaňyz, “Gutardy” diýip görkezilýär)</span></span>
+      {% elif field.name == "extra_images" %}
+        {% if object.images.all %}
+          <div class="gallery">
+            {% for im in object.images.all %}
+              <label class="gallery__item"><img src="{{ im.image.url }}" alt=""><span><input type="checkbox" name="delete_image" value="{{ im.id }}"> Poz</span></label>
+            {% endfor %}
+          </div>
+        {% endif %}
+        {{ field }}
+        <p class="hint">Birnäçe suraty birden saýlap bilersiňiz.</p>
+      {% else %}
+        {{ field }}
+        {% if field.help_text %}<p class="hint">{{ field.help_text }}</p>{% endif %}
+      {% endif %}
+      {% for e in field.errors %}<p class="error">{{ e }}</p>{% endfor %}
+    {% endfor %}
+    <div class="form__actions">
+      <button type="submit" class="btn btn--primary">Sakla</button>
+      <a class="btn" href="{% if cancel_url %}{{ cancel_url }}{% else %}{% url 'panel_list' %}{% endif %}">Ýatyr</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

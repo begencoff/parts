@@ -1,0 +1,37 @@
+{% extends "panel/base.html" %}
+{% block title %}Sargytlar{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>Sargytlar <small>{{ paginator.count }}</small></h1>
+</div>
+
+<nav class="tabs">
+  <a href="{% url 'panel_orders' %}" class="{% if not active_status %}is-active{% endif %}">Hemmesi</a>
+  {% for key, label in statuses %}
+    <a href="?status={{ key }}" class="{% if active_status == key %}is-active{% endif %}">{{ label }}</a>
+  {% endfor %}
+</nav>
+
+{% if orders %}
+<div class="tablewrap">
+<table class="table">
+  <thead><tr><th>№</th><th>Müşderi</th><th>Senesi</th><th>Ýagdaýy</th><th class="num">Jemi</th><th></th></tr></thead>
+  <tbody>
+  {% for o in orders %}
+    <tr>
+      <td><b>#{{ o.pk }}</b></td>
+      <td><span class="name">{{ o.name }}</span><span class="sub">{{ o.phone }} · {{ o.n }} haryt · {{ o.get_delivery_display }}</span></td>
+      <td>{{ o.created_at|date:"d.m.Y H:i" }}</td>
+      <td><span class="pill pill--{{ o.status }}">{{ o.get_status_display }}</span></td>
+      <td class="num">{{ o.total|floatformat:"-2" }} manat</td>
+      <td class="actions"><a class="btn btn--small" href="{% url 'panel_order' o.pk %}">Aç</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% include "partials/pagination.html" %}
+{% else %}
+  <p class="empty">Sargyt ýok. Müşderiler sahypadan sargyt edende şu ýerde görüner.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "panel/base.html" %}
+{% block title %}Kategoriýalar{% endblock %}
+{% block content %}
+<div class="head">
+  <h1>Kategoriýalar <small>{{ categories|length }}</small></h1>
+  <a class="btn btn--primary" href="{% url 'panel_category_create' %}">Täze kategoriýa</a>
+</div>
+
+{% if categories %}
+<div class="tablewrap" style="margin-top:1rem">
+<table class="table">
+  <thead><tr><th>Ady</th><th class="num">Zapçast sany</th><th></th></tr></thead>
+  <tbody>
+  {% for c in categories %}
+    <tr>
+      <td>{{ c.name }}</td>
+      <td class="num">{{ c.n }}</td>
+      <td class="actions">
+        <a class="btn btn--small" href="{% url 'panel_category_update' c.pk %}">Üýtget</a>
+        <a class="btn btn--small btn--danger" href="{% url 'panel_category_delete' c.pk %}">Poz</a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+<p class="hint" style="margin-top:1rem">Kategoriýalar sahypanyň ýokarsyndaky menýuda we footer-de görkezilýär. Zapçasty goşanyňyzda kategoriýany saýlaýarsyňyz.</p>
+{% else %}
+  <p class="empty">Entek kategoriýa ýok. Mysal: “Tormoz ulgamy”, “Dwigatel”, “Podweska”.</p>
+{% endif %}
+{% endblock %}
